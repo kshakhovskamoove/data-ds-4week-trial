@@ -1,0 +1,64 @@
+service: data-ds-four-week-trial-weekly-model-prod
+frameworkVersion: '3'
+
+custom:
+  pythonRequirements:
+    dockerizePip: false
+    slim: true # https://www.npmjs.com/package/serverless-python-requirements
+    slimPatternsAppendDefaults: false
+    slimPatterns:
+      - "**/test"
+      - "**/*.py[c|o]"
+      - "**/__pycache__*"
+    useStaticCache: false
+    useDownloadCache: false
+    invalidateCaches: true
+plugins:
+  - serverless-python-requirements
+package:
+  individually: true
+  patterns:
+    - "!venv/**"
+provider:
+  name: aws
+  runtime: python3.9
+  endpointType: regional
+  region: eu-west-1
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+    - "secretsmanager:GetSecretValue"
+    Resource: "*"
+functions:
+  four_week_trial:
+    name: data-ds-four-week-trial-weekly-model-prod
+    memorySize: 128
+    timeout: 420
+    handler: handler.four_week_trial
+    events:
+      - schedule:
+          name: data-ds-four-week-trial-weekly-SA
+          rate: cron(00 7 ? * WED,FRI *)
+          enabled: true
+          input:
+            country: SA
+      - schedule:
+          name: data-ds-four-week-tria--weekly-NG
+          rate: cron(05 7 ? * WED,FRI *)
+          enabled: true
+          input:
+            country: NG
+      - schedule:
+          name: data-ds-four-week-trial-weekly-GH
+          rate: cron(10 7 ? * WED,FRI *)
+          enabled: true
+          input:
+            country: GH
+      - schedule:
+          name: data-four-week-trial-weekly-IN
+          rate: cron(15 7 ? * WED,FRI *)
+          enabled: true
+          input:
+            country: IN
+    layers:
+      - arn:aws:lambda:eu-west-1:857392667336:layer:data-de-pandas:1
