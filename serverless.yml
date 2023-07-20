@@ -1,4 +1,4 @@
-service: data-ds-four-week-trial-weekly-model-prod
+service: data-ds-four-week-trial-weekly-prod
 frameworkVersion: '3'
 
 custom:
@@ -31,7 +31,7 @@ provider:
     Resource: "*"
 functions:
   four_week_trial:
-    name: data-ds-four-week-trial-weekly-model-prod
+    name: data-ds-four-week-trial-weekly-prod
     memorySize: 128
     timeout: 420
     handler: handler.four_week_trial
